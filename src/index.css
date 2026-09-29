@@ -1,0 +1,146 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Remove the grey tap flash on touch devices; our own press states replace it. */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @apply bg-bg text-ink font-body font-normal antialiased;
+}
+
+::selection {
+  @apply bg-primary/25 text-ink;
+}
+
+@layer utilities {
+  /* Frosted glassmorphism surface — used for nav, floating stat cards, etc. */
+  .glass {
+    @apply border border-white/60 bg-white/60 backdrop-blur-md;
+  }
+
+  .glass-deep {
+    @apply border border-white/10 bg-white/10 backdrop-blur-md;
+  }
+
+  /* Gradient headline/accent text. Requires a display: inline-block or block parent. */
+  .text-gradient {
+    @apply bg-gradient-text bg-clip-text text-transparent;
+  }
+
+  /* Consistent hover-lift for cards across sections. */
+  .card-hover {
+    transition:
+      transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 300ms ease-out;
+    @apply hover:-translate-y-1 hover:shadow-lift;
+  }
+
+  /* Diagonal shimmer sweep, e.g. for skeleton/loading or CTA accents. */
+  .shimmer-bg {
+    background: linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0) 60%
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+
+  /* Soft radial mesh background, e.g. behind hero / section headers. */
+  .bg-mesh {
+    @apply bg-gradient-mesh;
+  }
+
+  /* Animated underline for footer/text links. */
+  .story-link {
+    @apply relative transition-colors;
+  }
+  .story-link::after {
+    content: "";
+    @apply absolute -bottom-0.5 left-0 h-px w-0 bg-ink transition-all duration-300;
+  }
+  .story-link:hover::after {
+    @apply w-full;
+  }
+
+  /* --------------------------------------------------------------------
+     Dashboard-preview-only glass surfaces. Kept separate from `.glass`
+     above (used by the navbar, CapabilityCard, PrivacySection, etc.) so
+     this richer treatment stays scoped to the dashboard mockup only.
+     Shadows below use Tailwind's arbitrary-value syntax directly, so
+     this file has no dependency on custom boxShadow tokens in
+     tailwind.config.js — it works standalone.
+     -------------------------------------------------------------------- */
+
+  /* Premium frosted card: stronger blur + soft inner top highlight +
+     layered glass shadow (outer drop + inner top-edge highlight). */
+  .glass-panel {
+    @apply relative overflow-hidden border border-white/60 bg-white/55 backdrop-blur-lg shadow-[0_8px_32px_-8px_rgba(91,79,207,0.18),inset_0_1px_0_0_rgba(255,255,255,0.6)];
+  }
+  .glass-panel::before {
+    content: "";
+    @apply pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent;
+  }
+
+  /* Deeper frosted surface for the dashboard's outer browser frame. */
+  .glass-frame {
+    @apply relative overflow-hidden border border-white/50 backdrop-blur-xl;
+  }
+
+  /* Hover interaction for dashboard glass cards: brighten + glow.
+     Colour/shadow only, on purpose: every element using this class is also
+     driven by Framer Motion (entrance + whileHover lift). A CSS transition on
+     transform/opacity here would fight Framer's per-frame updates and make the
+     entrance lag and the lift feel mushy. */
+  .glass-hover {
+    transition:
+      border-color 300ms ease-out,
+      background-color 300ms ease-out,
+      box-shadow 400ms ease-out;
+    @apply hover:border-primary/40 hover:bg-white/75 hover:shadow-[0_0_30px_-6px_rgba(139,127,232,0.45)];
+  }
+}
+
+/* Keyboard focus: one soft lavender ring everywhere, only for keyboard users. */
+:focus-visible {
+  outline: 2px solid rgba(139, 127, 232, 0.65);
+  outline-offset: 3px;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
+/* Gentle opacity-only fade for route changes (no transform, so fixed-position
+   descendants such as the navbar are never affected). */
+@keyframes mindo-page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.page-enter {
+  animation: mindo-page-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
