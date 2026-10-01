@@ -7,7 +7,7 @@ import {
   signOut,
   updateProfile,
 } from "firebase/auth";
-import { auth } from "../lib/firebase";
+import { auth, authPersistence } from "../lib/firebase";
 
 const AuthContext = createContext(null);
 
@@ -16,12 +16,37 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
+    let unsubscribe;
+    let cancelled = false;
 
-    return unsubscribe;
+    const initializeAuth = async () => {
+      try {
+        await authPersistence;
+
+        if (cancelled) {
+          return;
+        }
+
+        unsubscribe = onAuthStateChanged(auth, (user) => {
+          setCurrentUser(user);
+          setLoading(false);
+        });
+      } catch (error) {
+        console.error("Firebase Auth initialization failed:", error);
+        setCurrentUser(null);
+        setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    return () => {
+      cancelled = true;
+
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   const signup = async (name, email, password) => {
@@ -35,7 +60,7 @@ export function AuthProvider({ children }) {
       displayName: name,
     });
 
-    setCurrentUser(auth.currentUser);
+    setCurrentUser(userCredential.user);
 
     return userCredential.user;
   };

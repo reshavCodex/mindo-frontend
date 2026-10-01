@@ -1,5 +1,9 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import {
+  getAuth,
+  setPersistence,
+  browserSessionPersistence,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -13,5 +17,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
+
+/*
+ * Use session persistence so authentication is isolated
+ * to the current browser tab/session.
+ *
+ * This prevents logging into a different Firebase account
+ * in another tab from replacing the current tab's user.
+ */
+export const authPersistence = setPersistence(
+  auth,
+  browserSessionPersistence
+);
 
 export default app;
