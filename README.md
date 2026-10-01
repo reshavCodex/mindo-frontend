@@ -25,18 +25,6 @@ Visiting each URL once should normally be enough. This is only a consequence of 
 
 ---
 
-## Screenshots
-
-| Landing | Dashboard |
-|---|---|
-| ![Landing page](docs/landing.png) | ![Dashboard](docs/dashboard.png) |
-
-| AI Video Counselling | Session Summary |
-|---|---|
-| ![Screening page](docs/screening.png) | ![Session summary](docs/summary.png) |
-
----
-
 ## What is MINDO?
 
 MINDO lets a signed-in user hold an open-ended, spoken check-in with an AI counsellor. While the conversation runs, an emotion model analyses the user's facial expressions in the browser. When the check-in ends, the conversation and emotion signals are analysed against a mental-health knowledge base and turned into a PDF report, which appears in the user's dashboard history. A separate text chatbot is also available.
