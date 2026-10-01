@@ -1699,59 +1699,42 @@ function ActiveRoom({
   const participantColumnWidth =
     "calc((100vh - 198px) * 0.8888889)";
 
-  const transcriptScrollRef =
-    useRef(null);
+  const transcriptScrollRef = useRef(null);
+  const shouldAutoScrollRef = useRef(true);
 
-  const shouldAutoScrollRef =
-    useRef(true);
+  const handleTranscriptScroll = useCallback(() => {
+    const container = transcriptScrollRef.current;
 
-  const handleTranscriptScroll =
-    useCallback(() => {
-      const container =
-        transcriptScrollRef.current;
-
-      if (!container) {
-        return;
-      }
-
-      const distanceFromBottom =
-        container.scrollHeight -
-        container.scrollTop -
-        container.clientHeight;
-
-      shouldAutoScrollRef.current =
-        distanceFromBottom <= 80;
-    }, []);
-
-  useEffect(() => {
-    const container =
-      transcriptScrollRef.current;
-
-    if (
-      !container ||
-      !shouldAutoScrollRef.current
-    ) {
+    if (!container) {
       return;
     }
 
-    const frame =
-      window.requestAnimationFrame(() => {
-        container.scrollTo({
-          top:
-            container.scrollHeight,
-          behavior: "smooth",
-        });
+    const distanceFromBottom =
+      container.scrollHeight -
+      container.scrollTop -
+      container.clientHeight;
+
+    shouldAutoScrollRef.current = distanceFromBottom <= 80;
+  }, []);
+
+  useEffect(() => {
+    const container = transcriptScrollRef.current;
+
+    if (!container || !shouldAutoScrollRef.current) {
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: "smooth",
       });
+    });
 
     return () => {
-      window.cancelAnimationFrame(
-        frame
-      );
+      window.cancelAnimationFrame(frame);
     };
-  }, [
-    session.transcript,
-    session.interimTranscript,
-  ]);
+  }, [session.transcript, session.interimTranscript]);
 
   return (
     <motion.div
@@ -1768,13 +1751,13 @@ function ActiveRoom({
       transition={{
         duration: 0.4,
       }}
-      className="relative flex h-screen w-full flex-col overflow-hidden px-2.5 pt-2.5 sm:px-4 sm:pt-4"
+      className="relative flex min-h-screen w-full flex-col overflow-x-hidden px-2.5 pt-2.5 pb-24 sm:px-4 sm:pt-4 sm:pb-24 lg:h-screen lg:min-h-0 lg:overflow-hidden lg:pb-0"
     >
       <div
-        className={`mx-auto flex h-[calc(100vh-72px)] w-full max-w-[1320px] flex-col overflow-hidden rounded-[26px] ${GLASS_ROOM}`}
+        className={`mx-auto flex w-full max-w-[1320px] flex-col overflow-hidden rounded-[26px] ${GLASS_ROOM} lg:h-[calc(100vh-72px)] lg:min-h-0`}
       >
-        <header className="relative flex h-[62px] shrink-0 items-center justify-between border-b border-white/20 px-5 sm:px-6">
-          <div className="flex items-center gap-3">
+        <header className="relative flex h-[62px] shrink-0 items-center justify-between border-b border-white/20 px-4 sm:px-6">
+          <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center">
               <img
                 src="/images/logo.png"
@@ -1783,7 +1766,7 @@ function ActiveRoom({
               />
             </div>
 
-            <div>
+            <div className="min-w-0">
               <p className="font-display text-sm font-bold tracking-tight text-ink">
                 Mindo
               </p>
@@ -1794,15 +1777,13 @@ function ActiveRoom({
             </div>
           </div>
 
-          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-2">
+          <div className="absolute left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap sm:gap-2">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-deep" />
 
-            <span className="text-xs font-medium text-ink-soft">
+            <span className="text-[11px] font-medium text-ink-soft sm:text-xs">
               Check-in ·{" "}
               <span className="tabular-nums text-ink">
-                {formatElapsedTime(
-                  elapsedSeconds
-                )}
+                {formatElapsedTime(elapsedSeconds)}
               </span>
             </span>
           </div>
@@ -1811,11 +1792,9 @@ function ActiveRoom({
             type="button"
             onClick={onEndSession}
             disabled={
-              session.connectionState ===
-                "ending" ||
-              !session.sessionId
+              session.connectionState === "ending" || !session.sessionId
             }
-            className={`group flex items-center gap-2 rounded-full px-3.5 py-2 text-xs font-medium text-ink-soft transition hover:border-danger/20 hover:bg-danger-soft hover:text-danger disabled:cursor-not-allowed disabled:opacity-50 ${GLASS_PILL}`}
+            className={`group flex shrink-0 items-center gap-2 rounded-full px-3 py-2 text-xs font-medium text-ink-soft transition hover:border-danger/20 hover:bg-danger-soft hover:text-danger disabled:cursor-not-allowed disabled:opacity-50 sm:px-3.5 ${GLASS_PILL}`}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-danger/70 transition group-hover:bg-danger" />
 
@@ -1829,15 +1808,15 @@ function ActiveRoom({
           </button>
         </header>
 
-        <div className="min-h-0 flex-1 px-3 py-3 sm:px-4 sm:py-4">
+        <div className="min-h-0 flex-1 px-2.5 py-2.5 sm:px-4 sm:py-4">
           <div
-            className="grid h-full min-h-0 gap-3"
+            className="grid min-h-0 gap-3 lg:h-full"
             style={{
               gridTemplateColumns:
                 `minmax(0, ${participantColumnWidth}) minmax(300px, 1fr)`,
             }}
           >
-            <section className="flex min-h-0 flex-col gap-3">
+            <section className="flex min-h-0 flex-col gap-3 lg:h-full">
               <ParticipantPanel
                 type="camera"
                 session={session}
@@ -1852,12 +1831,12 @@ function ActiveRoom({
             </section>
 
             <section
-              className={`flex min-h-0 flex-col overflow-hidden rounded-[20px] ${GLASS_PANEL}`}
+              className={`flex min-h-[420px] min-w-0 flex-col overflow-hidden rounded-[20px] ${GLASS_PANEL} lg:min-h-0`}
             >
               <GlassAtmosphere />
 
-              <div className="relative z-10 flex shrink-0 items-center justify-between border-b border-white/20 px-5 py-4">
-                <div>
+              <div className="relative z-10 flex shrink-0 items-center justify-between border-b border-white/20 px-4 py-3.5 sm:px-5 sm:py-4">
+                <div className="min-w-0">
                   <p className="font-display text-sm font-semibold text-ink">
                     Conversation
                   </p>
@@ -1868,7 +1847,7 @@ function ActiveRoom({
                 </div>
 
                 <div
-                  className={`flex items-center gap-2 rounded-full px-2.5 py-1.5 text-primary-deep ${GLASS_PILL}`}
+                  className={`flex shrink-0 items-center gap-2 rounded-full px-2.5 py-1.5 text-primary-deep ${GLASS_PILL}`}
                 >
                   <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-deep" />
 
@@ -1880,38 +1859,30 @@ function ActiveRoom({
 
               <div
                 ref={transcriptScrollRef}
-                onScroll={
-                  handleTranscriptScroll
-                }
-                className="relative z-10 min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5"
+                onScroll={handleTranscriptScroll}
+                className="relative z-10 min-h-[240px] flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-5 sm:py-5 lg:min-h-0"
                 style={{
                   scrollbarWidth: "thin",
                 }}
               >
                 <LiveTranscript
-                  transcript={
-                    session.transcript
-                  }
-                  interimTranscript={
-                    session.interimTranscript
-                  }
+                  transcript={session.transcript}
+                  interimTranscript={session.interimTranscript}
                 />
               </div>
 
-              <div className="relative z-10 shrink-0 border-t border-white/20 px-5 py-3">
+              <div className="relative z-10 shrink-0 border-t border-white/20 px-4 py-3 sm:px-5">
                 <div className="flex items-center gap-2">
                   <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      session.currentSpeaker ===
-                      "assistant"
+                    className={`h-1.5 w-1.5 ${
+                      session.currentSpeaker === "assistant"
                         ? "animate-pulse bg-primary-deep"
                         : "bg-ink-soft/30"
-                    }`}
+                    } rounded-full`}
                   />
 
-                  <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-ink-soft/50">
-                    {session.currentSpeaker ===
-                    "assistant"
+                  <span className="text-[9px] font-medium uppercase tracking-[0.14em] text-ink-soft/50 sm:text-[10px]">
+                    {session.currentSpeaker === "assistant"
                       ? "Mindo is speaking"
                       : "Your turn"}
                   </span>
@@ -1922,35 +1893,24 @@ function ActiveRoom({
         </div>
 
         {hasError && (
-          <div className="shrink-0 px-4 pb-4 sm:px-6">
+          <div className="shrink-0 px-3 pb-3 sm:px-6 sm:pb-4">
             <div
               className={`mx-auto max-w-xl rounded-2xl px-4 py-3 text-center text-sm text-danger ${GLASS_PANEL}`}
             >
-              {session.error ||
-                "Something interrupted your check-in."}
+              {session.error || "Something interrupted your check-in."}
             </div>
           </div>
         )}
       </div>
 
-      <div className="pointer-events-none absolute bottom-2.5 left-1/2 z-40 -translate-x-1/2 sm:bottom-3">
+      <div className="pointer-events-none fixed bottom-2.5 left-1/2 z-40 -translate-x-1/2 sm:bottom-3">
         <div className="pointer-events-auto">
           <ControlsDock
-            micMuted={
-              session.micMuted
-            }
-            cameraOff={
-              session.cameraOff
-            }
-            onToggleMic={
-              session.toggleMicrophone
-            }
-            onToggleCamera={
-              session.toggleCamera
-            }
-            onEnd={
-              onEndSession
-            }
+            micMuted={session.micMuted}
+            cameraOff={session.cameraOff}
+            onToggleMic={session.toggleMicrophone}
+            onToggleCamera={session.toggleCamera}
+            onEnd={onEndSession}
           />
         </div>
       </div>
