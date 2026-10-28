@@ -234,6 +234,14 @@ If you found this repository through my GitHub profile, start here: this is the 
 
 **Reshav Pradhan**
 [LinkedIn](https://www.linkedin.com/in/reshavpradhan/) · [GitHub](https://github.com/reshavCodex)
+**Sudip Pradhan**
+[LinkedIn](https://www.linkedin.com/in/sudip-pradhan-0238532b6/) · [GitHub](https://github.com/hey-sudip)
+**Ananya Bag**
+[LinkedIn](https://www.linkedin.com/in/ananya-bag-a34661374/) · [GitHub](https://github.com/MissAnanya2004)
+**Sweta Kar**
+[LinkedIn](https://www.linkedin.com/in/sweta-kar-9085a6326/) · [GitHub](https://github.com/swetakar8777-ops)
+**Anushka Bhowmick**
+[LinkedIn](www.linkedin.com/in/anushka-bhowmick-74a7b0340) · [GitHub](https://github.com/anushkabhowmick1444-bit)
 
 ## License
 
